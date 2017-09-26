@@ -1,6 +1,7 @@
 package com.lhf.ticket.model;
 
 import java.util.Date;
+import java.util.Set;
 
 public class OrderItem {
 	private Integer id;
@@ -9,6 +10,9 @@ public class OrderItem {
 	private Integer position_row;
 	private Date time;
 	private Boolean is_ordered;
+	
+	private String selected;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -45,6 +49,15 @@ public class OrderItem {
 	public void setIs_ordered(Boolean is_ordered) {
 		this.is_ordered = is_ordered;
 	}
+	public String getSelected() {
+		return selected;
+	}
+	public void setSelected(String selected) {
+		this.selected = selected;
+	}
 	
-	
+	@Override
+	public String toString() {
+		return selected.toString();
+	}
 }

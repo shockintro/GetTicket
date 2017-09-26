@@ -52,7 +52,10 @@ public class TicketController {
 	
 	@PostMapping()
 	public ResponseModel getTicket(@RequestBody  OrderItem orderIntem) {
-		System.out.println("api/ticket");
+		System.out.println(orderIntem.toString());
+
+//		Jedis jedis = jedisPool.getResource();
+//		jedis.bitcount("sit", start, end)
 		return null;
 	}
 //	// 初始化redis连接池
