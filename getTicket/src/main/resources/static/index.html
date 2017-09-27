@@ -8,19 +8,23 @@
 body {
 	text-align: center
 }
-
 .div {
 	margin: 0 auto;
 	width: 900px;
 	height: 900px;
 	border: 1px solid #F00
 }
-
+.div1 {
+	margin: 0 auto;
+	width: 200px;
+	height: 50px;
+	border: 1px solid #F00;
+	align: left
+}
 .style {
 	width: 80px;
 	height: 80px
 }
-
 .color {
 	width: 500px;
 	height: 60px;
@@ -29,17 +33,35 @@ body {
 	font-size: 60px;
 }
 </style>
-
 </head>
 <body>
 	<script>
 $(function(){
-	var selected = new Set();
-	var selectId = new Set();
+	//页面初始化加载时 需要执行的一次数据获取请求 将当前票的预订情况展现出来
+ 	$.ajax({
+        url : "/api/ticket",		
+        type : "get",
+        dataType: 'json',
+        success : function(data) {
+        	var ajaxobj = JSON.stringify(data);//将返回结果解析为json字符串
+        	data = eval('(' + ajaxobj + ')');//再重新构建json对象
+        	var index = data.result.data;//获得json对象data中的数据域
+        	$('#priceCount').val(index.length*66+'￥');
+        	for(var i=0;i<index.length;i++){//遍历每一个数据id 并进行操作
+        		var id= index[i];
+        		$('#'+id).attr("checked","checked");//如果存在id，说明该位置已经被预定，故前端需要标记为已勾选
+				$('#'+id).attr("disabled","disabled");//并且还需设置为不可更改
+        	}
+        },
+        error : function(data) {
+        } 
+    });
+	
+	var selectId = new Set();//定于set对象selectId 用于记录当前用户选中票的集合
 	$("#button").click(function() {
-		var list='';
+		var list='';// 用于从set对象selectId中拿数据并进行拼接数据，最后方便传输到后台处理
 		
-		selectId.forEach(function(item, sameItem, selectId) {
+		selectId.forEach(function(item, sameItem, selectId) {//从set对象selectId中获取数据进行拼接
    			list+=item + ",";
 		});
         $.ajax({
@@ -49,21 +71,22 @@ $(function(){
 	            contentType: "application/json",
 	            data: JSON.stringify({'mobile':'18351929165','selected':list}),
 	            success : function(data) {
+	            	var ajaxobj = JSON.stringify(data);
+	            	data = eval('(' + ajaxobj + ')'); 
+	            	var priceCount = data.result;
+	            		$('#priceCount').val(priceCount*66+'￥');
 	            		selectId.forEach(function(item, sameItem, selectId) {
-	           			$('#'+item).attr("disabled","disabled");
-	           			
+	           				$('#'+item).attr("disabled","disabled");
 	        			});
 	            },
 	            error : function(data) {
 	            } 
 	        });
 	});
-	$("input").click(function(){
-		if($(this).attr("checked")=='checked'){
-			selected.add($(this).attr("value"));
+	$("input").click(function(){//监听被选中的座位，获取其id 放入set对象selectId中
+		if($(this).attr("checked")=='checked'){//判断作为的勾选状态 由于存在 勾选/取消 的操作
 			selectId.add($(this).attr("id"))
 		}else{
-			selected.delete($(this).attr("value"));
 			selectId.delete($(this).attr("id"))
 		}
 	});
@@ -154,9 +177,15 @@ $(function(){
 		<input type="checkbox" id="81" name="81" value="9_9" class="style"><br>
 
 
-		<br> <br> <input type="text" class="color"
-			value="This Is The Screen" disabled="disabled">
+		<br>
+		单张票价：66元
+		
+		<br> 票价总计
+		<input type="text" id="priceCount"
+			name="priceCount" disabled="disabled">
 	</div>
+
+
 	<button id="button">submit</button>
 </body>
 </html>
