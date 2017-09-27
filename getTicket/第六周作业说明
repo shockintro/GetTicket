@@ -1,0 +1,8 @@
+本次作业为通过redis 实现在线订票 计价 选座功能
+其中主要功能实现的文件为 
+	package com.lhf.ticket.controller.TicketController
+		getAll方法用于获得当前座位预定的情况，每一次刷新页面都会请求一次getAll方法，通过读取制定key的getbit方法获得当前哪些位被置为1 变代表了这个位对应的位置id被预定
+		getTicket方法用于订坐，通过前端传输过来的id数组，将对应redis中的key的对应位置为1，便表示预定此座位，
+	
+	index.html
+		预先设定一定数量的checkbox，每个checkbox的id代表后台redis中指定key对应的位-1，
