@@ -6,3 +6,9 @@
 	
 	index.html
 		预先设定一定数量的checkbox，每个checkbox的id代表后台redis中指定key对应的位-1，
+
+redis服务是在虚拟机里面启动的 
+外部需要连接redis服务需要修改配置redis.conf
+1、注释   bind 127.0.0.1
+2、添加   protected-mode no
+3、启动redis服务时需带上配置 ：src/redis-server redis.conf
